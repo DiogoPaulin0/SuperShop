@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SuperShop.Data;
@@ -52,6 +53,7 @@ namespace SuperShop.Controllers
         }
 
         // GET: Products/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -75,8 +77,7 @@ namespace SuperShop.Controllers
 
                 var product = _converterHelper.ToProduct(model, imageId, true);
 
-                //TODO: Modificar para o user que tiver logado
-                product.User = await _userHelper.GetUserByEmailAsync("diogopaulino1808@gmail.com");
+                product.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await _productRepository.CreateAsync(product);
                 return RedirectToAction(nameof(Index));
             }
@@ -84,6 +85,7 @@ namespace SuperShop.Controllers
         }
 
         // GET: Products/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -122,8 +124,7 @@ namespace SuperShop.Controllers
 
                     var product = _converterHelper.ToProduct(model, imageId, false);
 
-                    //TODO: Modificar para o user que tiver logado
-                    product.User = await _userHelper.GetUserByEmailAsync("diogopaulino1808@gmail.com");
+                    product.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _productRepository.UpdateAsync(product);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -143,6 +144,7 @@ namespace SuperShop.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
