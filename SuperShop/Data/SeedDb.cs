@@ -25,7 +25,7 @@ namespace SuperShop.Data
             await _context.Database.EnsureCreatedAsync();
 
             await _userHelper.CheckRoleAsync("Admin");
-            await _userHelper.CheckRoleAsync("Costumer");
+            await _userHelper.CheckRoleAsync("Customer");
 
             var user = await _userHelper.GetUserByEmailAsync("diogopaulino1808@gmail.com");
             if (user == null)
