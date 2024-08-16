@@ -29,13 +29,25 @@ namespace SuperShop.Controllers
             return View(model);
         }
 
-        public IActionResult Addproduct()
+        public IActionResult AddProduct()
         {
             var model = new AddItemViewModel
             {
                 Quantity = 1,
                 Products = _productRepository.GetComboProducts()
             };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddProduct(AddItemViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _orderRepository.AddItemToOrderAsync(model, this.User.Identity.Name);
+                return RedirectToAction("Create");
+            }
 
             return View(model);
         }
