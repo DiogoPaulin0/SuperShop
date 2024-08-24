@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 using SuperShop.Data;
 using SuperShop.Data.Entities;
 using SuperShop.Helpers;
-using System.Text;
 
 namespace SuperShop
 {
@@ -27,6 +27,8 @@ namespace SuperShop
         {
             services.AddIdentity<User, IdentityRole>(cfg =>
             {
+                cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+                cfg.SignIn.RequireConfirmedEmail = true;
                 cfg.User.RequireUniqueEmail = true;
                 cfg.Password.RequireDigit = false;
                 cfg.Password.RequiredUniqueChars = 0;
@@ -35,6 +37,7 @@ namespace SuperShop
                 cfg.Password.RequireNonAlphanumeric = false;
                 cfg.Password.RequiredLength = 6;
             })
+                .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<DataContext>();
 
             services.AddAuthentication()
@@ -62,6 +65,8 @@ namespace SuperShop
             services.AddScoped<IBlobHelper, BlobHelper>();
 
             services.AddScoped<IConverterHelper, ConverterHelper>();
+
+            services.AddScoped<IMailHelper, MailHelper>();
 
             services.AddScoped<IProductRepository, ProductRepository>();
 
